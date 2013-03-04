@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<form class="well" method="post" action=".">
+    {% csrf_token %}
+  {{ form.as_p }}
+
+  <input type="submit" class="btn" value="{% trans 'Log in' %}" />
+  <input type="hidden" name="next" value="/logged-in/" />
+</form>
+
+<hr>
+
+<a href="#myModal" role="button" class="btn" data-toggle="modal">OpenID sign-in</a>
+ 
+
+<div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Login or sign up</h3>
+  </div>
+  <div class="modal-body">
+    <p><a class="btn-auth btn-google" href="{% url socialauth_begin 'google' %}">Sign in with <b>Google</b></a></p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
+<hr>
+
+<p>{% trans "Forgot password" %}? <a href="{% url auth_password_reset %}">{% trans "Reset it" %}</a>!</p>
+
+
+<p>{% trans "Not member" %}? <a href="{% url registration_register %}">{% trans "Register" %}</a>!</p>
+{% endblock %}

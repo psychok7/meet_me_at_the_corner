@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Hey {% if user.username %}{{ user.username }} ID: {{ user.id }}
+{% else %} {{ user.username }} {% endif %}!</h1>
+
+
+<label for="search"> Search :</label>
+
+    {% if error %}
+        <p style="color: red;">Please submit a search term.</p>
+    {% endif %}
+    
+<form method="get" action="/accounts/{{ user.id }}/search/">
+        <input type="text" name="q">
+        <input type="submit" value="Search">
+</form>
+
+
+
+{% if request.session.account %}
+
+WORKS : {{ request.session.account.info }}
+
+
+{% else %}
+
+    <form method="post" action="/account/create/">
+            {% csrf_token %}
+   
+        <div>
+            <label for="info"> Information :</label>
+            <textarea  type="text" rows=10 cols=40 name="info" value="d" id="info">
+            <input type="submit" value="Create Account" />
+        </div>
+
+    </form>
+
+{% endif %}
+
+
+
+
+{% if parks %}
+    <p>You searched for: <strong>{{ query }}</strong></p>
+    <p>Found {{ parks|length }} park{{ parks|pluralize }}.</p>
+    <ul>
+        {% for park in parks %}
+
+        <li> {{ park.location }} </li>
+        <li> {{ park.park_address }} </li>
+        <a href="{% url parks user.id park.id %}"> See Park Details <a> 
+        
+        {% endfor %}
+        
+        
+        
+    </ul>
+
+{% endif %}
+
+{% endblock %}

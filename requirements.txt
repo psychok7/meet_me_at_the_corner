@@ -1,0 +1,11 @@
+argparse==1.2.1
+distribute==0.6.24
+wsgiref==0.1.2
+Django==1.4
+psycopg2==2.4.5
+pillow==1.7.7
+gunicorn==0.13.4
+django-registration==0.8
+django-tastypie==0.9.11
+dj-database-url==0.2.1
+django-social-auth==0.7.9

@@ -1,0 +1,134 @@
+{% load i18n %} <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{% block title %}MeetMe@theCorner{% endblock %}</title>
+<meta name="description" content="MeetMe@theCorner">
+<meta name="author" content="Khan">
+<link href="/media/css/bootstrap.css" rel="stylesheet">
+<link href="/media/css/bootstrap-responsive.css" rel="stylesheet">
+<link href="/media/css/datepicker.css" rel="stylesheet">
+<link href="/media/css/custom.css" rel="stylesheet">
+<link href="/media/css/auth-buttons.css" rel="stylesheet">
+<script src="/media/js/jquery-1.8.2.min.js"></script>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmuCIoTKjIDsNHgzjLIr0lbcU-PFubq4w&sensor=false&libraries=drawing"></script>
+<script src="/media/js/meeting.js"></script>
+
+
+</head>
+
+<body onload="initialize()">
+
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			</a>
+			<a class="brand" width="40" height="30" alt="w3resource logo"/></a>
+			<div class="nav-collapse">
+				<ul class="nav">
+					<li class="active"><a href="{% url index %}">{% trans "Home" %}</a></li>
+					<li><a href="#myModalabout" data-dismiss="modal" data-toggle="modal" >About</a></li>
+				</ul>
+                {% block header %} 
+                {% if user.is_authenticated %}
+
+                
+
+                    <p class="navbar-text pull-right">Logged in as <a href="/{{ user.username }}">{{ user.username }}</a></p>
+                    <ul class="nav" >
+                        <li ><a href="{% url auth_password_change %}">{% trans "Change password" %}</a></li>
+                        <a href="{% url auth_logout %}" class="btn btn-primary" data-toggle="modal">{% trans "Log out" %}</a>
+                    </ul>
+                    {% else %}
+                        <p class="navbar-text pull-right"><a href="{% url auth_login %}">{% trans "Log in" %}</a></p>
+                    {% endif %}
+                {% endblock %}
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</div>
+
+
+
+<div class="modal hide fade" id="myModalabout" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">About Us</h3>
+  </div>
+  <div class="modal-body">
+  	<p>Meet your Friends</p>			    
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+	<br>
+	<br>
+	<br>
+{% block map %}	{% endblock %}
+
+<div class="container">
+
+
+
+	<!-- Main hero unit for a primary marketing message or call to action -->
+	<div id="logo" class="leaderboard">
+		{% block logo %}
+		<div style="display:inline-block"><h2> MeetMe@theCorner</h2></div>
+		<p>
+			 Meet with Simplicity.
+		</p>
+		<p>
+			<a class="btn btn-success btn-large" href="{% url registration_register %}">Register</a>
+		</p>    
+		{% endblock %}
+	</div>
+
+	<hr>
+    
+    
+    {% block content %}{% endblock %}
+    
+	<footer>
+	<p>
+		 
+         {% block footer %}
+			<p class="company">&copy;Powered by <a href="https://www.djangoproject.com/">Django Framework 1.4</a> | <a href="#">4aebca9 @ MeetMe@theCorner Alpha</a></p>
+        {% endblock %}
+	</p>
+	</footer>
+</div>
+<!-- /container -->
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+
+
+<script src="/media/js/bootstrap-transition.js"></script>
+<script src="/media/js/bootstrap-alert.js"></script>
+<script src="/media/js/bootstrap-modal.js"></script>
+<script src="/media/js/bootstrap-dropdown.js"></script>
+<script src="/media/js/bootstrap-scrollspy.js"></script>
+<script src="/media/js/bootstrap-tab.js"></script>
+<script src="/media/js/bootstrap-tooltip.js"></script>
+<script src="/media/js/bootstrap-popover.js"></script>
+<script src="/media/js/bootstrap-button.js"></script>
+<script src="/media/js/bootstrap-collapse.js"></script>
+<script src="/media/js/bootstrap-carousel.js"></script>
+<script src="/media/js/bootstrap-typeahead.js"></script>
+<script src="/media/js/bootstrap-datepicker.js"></script>
+</body>
+</html>
