@@ -9,3 +9,4 @@ django-registration==0.8
 django-tastypie==0.9.11
 dj-database-url==0.2.1
 django-social-auth==0.7.9
+django-braces==0.2.2
