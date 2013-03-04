@@ -111,5 +111,5 @@ function initialize() {
 function savezone(){
 	$.post("meeting/save_zone",{zones : JSON.stringify(zone)},function(data,status){
             alert("YOUR ZONES ARE SAVED");
-        });
+    });
 }
