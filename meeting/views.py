@@ -31,9 +31,37 @@ class AddFriendView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, Cu
 	def dispatch(self, *args, **kwargs):
 		return super(AddFriendView, self).dispatch(*args, **kwargs)
 
+	def are_friends(self,u,friend):
+		flag=True
+		try:
+			friend1 = Friend.objects.get(user1__exact=u)
+			try:
+				friend2 = Friend.objects.get(user2__exact=friend)
+			except Friend.DoesNotExist:
+				flag=False
+		except Friend.DoesNotExist:
+			flag = False
+		return flag
+
 	def post_ajax(self, request, username):
 		u = get_object_or_404(User, pk=self.current_user_id(request))	
-		message =json.dumps({'Status':'Success'})
+		friendname = json.loads(request.POST.get('friendname', None))
+
+		try:
+			friend = User.objects.get(username__exact=friendname)
+			if (self.are_friends(u,friend)):
+				message =json.dumps({'Status':'Already Friends'})
+			elif (self.are_friends(friend,u)):
+				message =json.dumps({'Status':'Already Friends'})
+			else :
+				new_friend = Friend(user1=u, user2=friend)
+				new_friend.save()
+
+		except User.DoesNotExist:
+			message =json.dumps({'Status':'404'})
+
+
+		message =json.dumps({'Status':'200'})
 		return self.render_json_response(message)
 
 class SaveZoneView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, CurrentUserIdMixin, View):

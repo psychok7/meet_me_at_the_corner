@@ -107,6 +107,13 @@ function initialize() {
 	drawingManager.setMap(map);
 }
 
+function addfriend(){
+	var friendname=window.location.pathname.split("/");
+	$.post("meeting/add_friend",{friendname : JSON.stringify(friendname[1])},function(data,status){
+            console.log(status);
+            alert("Friend added!!");
+    });
+}
 
 function savezone(){
 	$.post("meeting/save_zone",{zones : JSON.stringify(zone)},function(data,status){
