@@ -77,39 +77,39 @@
 	<br>
 	<br>
 	<br>
-{% block map %}	{% endblock %}
 
-<div class="container">
+{% block map %}	
+	<div class="container">
+		<!-- Main hero unit for a primary marketing message or call to action -->
+		<div id="logo" class="leaderboard">
+			{% block logo %}
+			<div style="display:inline-block"><h2> MeetMe@theCorner</h2></div>
+			<p>
+				 Meet with Simplicity.
+			</p>
+			<p>
+				<a class="btn btn-success btn-large" href="{% url registration_register %}">Register</a>
+			</p>    
+			{% endblock %}
+		</div>
 
-
-
-	<!-- Main hero unit for a primary marketing message or call to action -->
-	<div id="logo" class="leaderboard">
-		{% block logo %}
-		<div style="display:inline-block"><h2> MeetMe@theCorner</h2></div>
+		<hr>
+	    
+	    
+	    {% block content %}{% endblock %}
+	    
+	    
+		<footer>
 		<p>
-			 Meet with Simplicity.
+			 
+	         {% block footer %}
+				<p class="company">&copy;Powered by <a href="https://www.djangoproject.com/">Django Framework 1.4</a> | <a href="#">4aebca9 @ MeetMe@theCorner Alpha</a></p>
+	        {% endblock %}
 		</p>
-		<p>
-			<a class="btn btn-success btn-large" href="{% url registration_register %}">Register</a>
-		</p>    
-		{% endblock %}
+		</footer>
 	</div>
+{% endblock %}
 
-	<hr>
-    
-    
-    {% block content %}{% endblock %}
-    
-	<footer>
-	<p>
-		 
-         {% block footer %}
-			<p class="company">&copy;Powered by <a href="https://www.djangoproject.com/">Django Framework 1.4</a> | <a href="#">4aebca9 @ MeetMe@theCorner Alpha</a></p>
-        {% endblock %}
-	</p>
-	</footer>
-</div>
 <!-- /container -->
 <!-- Le javascript
 ================================================== -->

@@ -25,6 +25,17 @@ class LoggedInView(LoginRequiredMixin, View):
 		url = '/%s/' % self.request.user.username
 		return HttpResponseRedirect(url)
 
+class AddFriendView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, CurrentUserIdMixin, View):
+
+	@method_decorator(csrf_protect)
+	def dispatch(self, *args, **kwargs):
+		return super(AddFriendView, self).dispatch(*args, **kwargs)
+
+	def post_ajax(self, request, username):
+		u = get_object_or_404(User, pk=self.current_user_id(request))	
+		message =json.dumps({'Status':'Success'})
+		return self.render_json_response(message)
+
 class SaveZoneView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, CurrentUserIdMixin, View):
 	
 	@method_decorator(csrf_protect)

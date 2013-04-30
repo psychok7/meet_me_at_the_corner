@@ -1,24 +1,19 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h1>Hey {% if user.username %}{{ user.username }} ID: {{ user.id }}
-{% else %} {{ user.username }} {% endif %}!</h1>
-
-
 {% if user.username %}
 
 
 {% block map %}
-	<div class="form-actions">
-		{% csrf_token %}
-		<button type="submit" class="btn btn-primary" name="save_zone" onclick="savezone();">Save Zones</button>
-    </div>
-    <div id="map_canvas" style="width:90%; height:90%"></div>
+	{% if user.is_authenticated %}
+		<div class="form-actions">
+			{% csrf_token %}
+			<button type="submit" class="btn btn-primary" name="add_friend" onclick="addfriend();">Add Friend</button>
+			<button type="submit" class="btn btn-primary" name="save_zone" onclick="savezone();">Save Zones</button>
+	    </div>
+	    <div id="map_canvas" style="width:80%; height:80%"></div>
+    {% endif %}
 {% endblock %}
-
-
-
-    
+  
 
 {% else %}
     <h1> Please Login </h1>
@@ -26,4 +21,7 @@
 
 {% endif %}
 
+{% block content %}
+<h1>Hey {% if user.username %}{{ user.username }} ID: {{ user.id }}
+{% else %} {{ user.username }} {% endif %}!</h1>
 {% endblock %}
