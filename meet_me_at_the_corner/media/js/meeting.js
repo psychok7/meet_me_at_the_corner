@@ -3,77 +3,97 @@ var lat;
 var lng;
 var radius;
 var zone = [];
+window.myzone=[];
 
-	function getCookie(name) {
-		var cookieValue = null;
-		if (document.cookie && document.cookie != '') {
-			var cookies = document.cookie.split(';');
-			for (var i = 0; i < cookies.length; i++) {
-				var cookie = jQuery.trim(cookies[i]);
-				// Does this cookie string begin with the name we want?
-				if (cookie.substring(0, name.length + 1) == (name + '=')) {
-					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-					break;
-				}
+function getCookie(name) {
+	var cookieValue = null;
+	if (document.cookie && document.cookie != '') {
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+			var cookie = jQuery.trim(cookies[i]);
+			// Does this cookie string begin with the name we want?
+			if (cookie.substring(0, name.length + 1) == (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
 			}
 		}
-		return cookieValue;
 	}
-	var csrftoken = getCookie('csrftoken');
+	return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
 
-	function csrfSafeMethod(method) {
-		// these HTTP methods do not require CSRF protection
-		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-	}
-	function sameOrigin(url) {
-		// test that a given url is a same-origin URL
-		// url could be relative or scheme relative or absolute
-		var host = document.location.host; // host + port
-		var protocol = document.location.protocol;
-		var sr_origin = '//' + host;
-		var origin = protocol + sr_origin;
-		// Allow absolute or scheme relative URLs to same origin
-		return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-			(url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-			// or any other URL that isn't scheme relative or absolute i.e relative.
-			!(/^(\/\/|http:|https:).*/.test(url));
-	}
-	$.ajaxSetup({
-		beforeSend: function(xhr, settings) {
-			if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-				// Send the token to same-origin, relative URLs only.
-				// Send the token only if the method warrants CSRF protection
-				// Using the CSRFToken value acquired earlier
-				xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			}
+function csrfSafeMethod(method) {
+	// these HTTP methods do not require CSRF protection
+	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function sameOrigin(url) {
+	// test that a given url is a same-origin URL
+	// url could be relative or scheme relative or absolute
+	var host = document.location.host; // host + port
+	var protocol = document.location.protocol;
+	var sr_origin = '//' + host;
+	var origin = protocol + sr_origin;
+	// Allow absolute or scheme relative URLs to same origin
+	return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+		(url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+		// or any other URL that isn't scheme relative or absolute i.e relative.
+		!(/^(\/\/|http:|https:).*/.test(url));
+}
+$.ajaxSetup({
+	beforeSend: function(xhr, settings) {
+		if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+			// Send the token to same-origin, relative URLs only.
+			// Send the token only if the method warrants CSRF protection
+			// Using the CSRFToken value acquired earlier
+			xhr.setRequestHeader("X-CSRFToken", csrftoken);
 		}
+	}
+});
+
+function getUrlVars() {
+	var vars = {};
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+		vars[key] = value;
 	});
+	return vars;
+}
 
-	function getUrlVars() {
-		var vars = {};
-		var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-			vars[key] = value;
-		});
-		return vars;
-	}
-
+/*****************************************************************************************************
+									 MAP RELATED FUNCTIONS
+******************************************************************************************************/
 function initialize() {
 	var mapOptions = {
 	  center: new google.maps.LatLng(38.770949, -9.196243),
-	  zoom: 12,
+	  zoom: 7,
 	  mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
-	var map = new google.maps.Map(document.getElementById("map_canvas"),
-	    mapOptions);
+	var map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
 
-	var marker = new google.maps.Marker({
-      position: mapOptions.center,
-      map: map,
-      title:"Hello World!"
-  	});
+	// Try HTML5 geolocation
+	if(navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+			var pos = new google.maps.LatLng(position.coords.latitude,
+				position.coords.longitude);
 
+			var infowindow = new google.maps.InfoWindow({
+				map: map,
+				position: pos,
+				content: 'Location found using HTML5.'
+			});
+			console.log(pos.lat());
+			console.log(pos.lng());
+			map.setCenter(pos);
+		}, function() {
+			handleNoGeolocation(true);
+		});
+	} else {
+	    // Browser doesn't support Geolocation
+	    handleNoGeolocation(false);
+	}
+
+	// Using Drawing Manager Library to draw on the map
 	var drawingManager = new google.maps.drawing.DrawingManager({
-	  drawingMode: google.maps.drawing.OverlayType.MARKER,
+	  drawingMode: google.maps.drawing.OverlayType.CIRCLE,
 	  drawingControl: true,
 	  drawingControlOptions: {
 	    position: google.maps.ControlPosition.TOP_CENTER,
@@ -83,8 +103,7 @@ function initialize() {
 	  },
 	  circleOptions: {
 	    fillColor: '#00FF00',
-	    fillOpacity: 0.2,
-	    strokeWeight: 5,
+	    fillOpacity: 0.4,
 	    clickable: true,
 	    zIndex: 1,
 	    editable: true
@@ -105,6 +124,23 @@ function initialize() {
     });
 
 	drawingManager.setMap(map);
+}
+
+function handleNoGeolocation(errorFlag) {
+	if (errorFlag) {
+	var content = 'Error: The Geolocation service failed.';
+	} else {
+	var content = 'Error: Your browser doesn\'t support geolocation.';
+	}
+
+	var options = {
+	map: map,
+	position: new google.maps.LatLng(60, 105),
+	content: content
+	};
+
+	var infowindow = new google.maps.InfoWindow(options);
+	map.setCenter(options.position);
 }
 
 function addfriend(){

@@ -5,6 +5,20 @@
 
 {% block map %}
 	{% if user.is_authenticated %}
+		{% if zone %}
+		    <script type="text/javascript">
+		       window.myzone.push({
+		       	"lat" : "{{zone.lat}}",
+		       	"lng" : "{{zone.lng}}",
+		       	"radius" : "{{zone.radious}}"
+		       });
+		       console.log("myzone: " + window.myzone[0]["lat"]);
+		    </script>
+		{% else %}
+			teste
+		{% endif %}
+
+
 		<div class="form-actions">
 			{% csrf_token %}
 			<button type="submit" class="btn btn-primary" name="add_friend" onclick="addfriend();">Add Friend</button>

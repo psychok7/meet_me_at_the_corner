@@ -25,6 +25,19 @@ class LoggedInView(LoginRequiredMixin, View):
 		url = '/%s/' % self.request.user.username
 		return HttpResponseRedirect(url)
 
+class ProfileView(LoginRequiredMixin, CurrentUserIdMixin, TemplateView):
+	template_name = 'accounts/profile.html'
+
+	def get(self, request, *args, **kwargs):
+		u = get_object_or_404(User, pk=self.current_user_id(request))
+		try:
+			zone = Zone.objects.get(user_id__exact=u)
+			print zone
+		except Zone.DoesNotExist:
+			return self.render_to_response({})
+
+		return self.render_to_response({'zone':zone})
+
 class AddFriendView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, CurrentUserIdMixin, View):
 
 	@method_decorator(csrf_protect)

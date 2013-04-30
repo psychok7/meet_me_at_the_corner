@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic.simple import direct_to_template , redirect_to
 from meet_me_at_the_corner import settings
-from meeting.views import LoggedInView
+from meeting.views import LoggedInView,ProfileView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -14,7 +14,7 @@ urlpatterns = patterns('',
                     url(r'', include('social_auth.urls')),
                     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
                     url(r'^admin/', include(admin.site.urls)),
-                    url(r'^(?P<username>[-\w]+)/$',direct_to_template,{'template': 'accounts/profile.html'}, name='profile'),
+                    url(r'^(?P<username>[-\w]+)/$',ProfileView.as_view(), name='profile'),
                     (r'^users/(?P<username>[-\w]+)/$', redirect_to, {'url': '/%(username)s/'}),
                     (r'^accounts/', include('registration.backends.simple.urls')),
                     (r'^(?P<username>[-\w]+)/', include('meeting.urls')),
