@@ -199,6 +199,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_auth.backends.pipeline.user.update_user_details'
 )
 
+SITE_URL= 'http://meetmeatthecorner.herokuapp.com'
+
 TWITTER_CONSUMER_KEY         = 'NrdnIRZ1rTFGg2fcLz5Wg'
 TWITTER_CONSUMER_SECRET      = 'nuVnzP7l3uNLOeS5Op3vu6WbZ6sV1bjjOsWO4v0IXjE'
 FACEBOOK_APP_ID              = '421685987868662'
