@@ -73,7 +73,6 @@ class AddFriendView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, Cu
 		except User.DoesNotExist:
 			message =json.dumps({'Status':'404'})
 
-
 		message =json.dumps({'Status':'200'})
 		return self.render_json_response(message)
 
@@ -105,7 +104,7 @@ class Circle:
 		def __init__(self, lng, lat, radius):
 			self.lng, self.lat, self.radius = lng, lat, radius
 
-class CheckZonesView(JSONResponseMixin, CurrentUserIdMixin, View):
+class CheckZonesView(JSONResponseMixin, AjaxResponseMixin,CurrentUserIdMixin, View):
 	
 	# A point can be defined by setting the radius at 0.
 
@@ -127,8 +126,8 @@ class CheckZonesView(JSONResponseMixin, CurrentUserIdMixin, View):
 		dist = R * (2 * atan2(sqrt(a), sqrt(1-a)))
 		
 		if dist <= float(circle.radious):
-			return 'LAT: ' + str(circle.lat)+' LNG:'+ str(circle.lng) + 'sep'
-		return 'sep'
+			return {'lat':str(circle.lat),'lng' : str(circle.lng)}
+		return None
 
 	@method_decorator(csrf_exempt)
 	def dispatch(self, *args, **kwargs):
@@ -137,10 +136,7 @@ class CheckZonesView(JSONResponseMixin, CurrentUserIdMixin, View):
 	def post(self, request, username):
 		lat = request.POST.get('lat', None)
 		lng = request.POST.get('lng', None)
-		username = request.POST.get('username', None)
-		#print username
-		#circles = [Circle(38.730519,-9.14653, 12.5), Circle(3.5, 4.5, 10), Circle(12.0, 10.0, 0.5)]
-		u = User.objects.get(username__contains=username)
+		u = get_object_or_404(User, pk=self.current_user_id(request))
 		circles = Zone.objects.filter(user=u)
 		for x in Zone.objects.all():
 			print x.lat

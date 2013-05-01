@@ -61,13 +61,18 @@ function getUrlVars() {
 /*****************************************************************************************************
 									 MAP RELATED FUNCTIONS
 ******************************************************************************************************/
+var geocoder;
+var map;
+var infowindow = new google.maps.InfoWindow();
+var marker;
 function initialize() {
+	geocoder = new google.maps.Geocoder();
 	var mapOptions = {
 	  center: new google.maps.LatLng(38.770949, -9.196243),
 	  zoom: 4,
 	  mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
-	var map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
+	map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
 
 	// Try HTML5 geolocation
 	if(navigator.geolocation) {
@@ -75,14 +80,13 @@ function initialize() {
 			var pos = new google.maps.LatLng(position.coords.latitude,
 				position.coords.longitude);
 
-			var infowindow = new google.maps.InfoWindow({
+			infowindow = new google.maps.InfoWindow({
 				map: map,
 				position: pos,
 				content: 'Location found using HTML5.'
 			});
-			console.log(pos.lat());
-			console.log(pos.lng());
 			map.setCenter(pos);
+			checkzone(pos);
 		}, function() {
 			handleNoGeolocation(true);
 		});
@@ -147,8 +151,29 @@ function handleNoGeolocation(errorFlag) {
 	content: content
 	};
 
-	var infowindow = new google.maps.InfoWindow(options);
+	infowindow = new google.maps.InfoWindow(options);
 	map.setCenter(options.position);
+}
+
+function codeLatLng(lat,lng) {
+   var lat = parseFloat(lat);
+   var lng = parseFloat(lng);
+   var latlng = new google.maps.LatLng(lat, lng);
+   geocoder.geocode({'latLng': latlng}, function(results, status) {
+     if (status == google.maps.GeocoderStatus.OK) {
+       if (results[1]) {
+         map.setZoom(4);
+         marker = new google.maps.Marker({
+             position: latlng,
+             map: map
+         });
+         infowindow.setContent("We can meet at " + results[1].formatted_address);
+         infowindow.open(map, marker);
+       }
+     } else {
+       alert("Geocoder failed due to: " + status);
+     }
+   });
 }
 
 function addfriend(){
@@ -162,5 +187,17 @@ function addfriend(){
 function savezone(){
 	$.post("meeting/save_zone",{zones : JSON.stringify(zone)},function(data,status){
             alert("YOUR ZONES ARE SAVED");
+    });
+}
+
+function checkzone(pos){
+	console.log(pos.lat());
+	console.log(pos.lng());
+	$.post("meeting/check_zone",{lat : JSON.stringify(pos.lat()),lng : JSON.stringify(pos.lng())},function(data,status){
+            obj = JSON.parse(data);
+            if(obj!=null){
+            	//alert("We can meet at lat: " + obj[0]["lat"] + " lng:" + obj[0]["lng"]);
+            	codeLatLng(obj[0]["lat"],obj[0]["lng"]);
+            }
     });
 }
