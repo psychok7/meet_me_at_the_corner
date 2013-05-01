@@ -155,7 +155,7 @@ function handleNoGeolocation(errorFlag) {
 	map.setCenter(options.position);
 }
 
-function codeLatLng(lat,lng) {
+function codeLatLng(lat,lng,friendname) {
    var lat = parseFloat(lat);
    var lng = parseFloat(lng);
    var latlng = new google.maps.LatLng(lat, lng);
@@ -167,7 +167,7 @@ function codeLatLng(lat,lng) {
              position: latlng,
              map: map
          });
-         infowindow.setContent("We can meet at " + results[1].formatted_address);
+         infowindow.setContent("We can meet '" + friendname + "' at " + results[1].formatted_address);
          infowindow.open(map, marker);
        }
      } else {
@@ -197,7 +197,7 @@ function checkzone(pos){
             obj = JSON.parse(data);
             if(obj!=null){
             	//alert("We can meet at lat: " + obj[0]["lat"] + " lng:" + obj[0]["lng"]);
-            	codeLatLng(obj[0]["lat"],obj[0]["lng"]);
+            	codeLatLng(obj[0]["lat"],obj[0]["lng"],obj[0]["friend"]);
             }
     });
 }

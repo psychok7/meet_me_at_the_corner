@@ -107,10 +107,15 @@ class Circle:
 class CheckZonesView(JSONResponseMixin, AjaxResponseMixin,CurrentUserIdMixin, View):
 	
 	# A point can be defined by setting the radius at 0.
+	count = -1
 
-
-	def comparison(self, P, circle):
+	
+	def comparison(self, P, circle, friends):
 		R = 6371 # Earth mean radius
+		
+		self.count = self.count + 1
+		print "amigos: " , friends[self.count]
+		
 
 		circle.lat = float(circle.lat)
 		circle.lng = float(circle.lng)
@@ -126,7 +131,8 @@ class CheckZonesView(JSONResponseMixin, AjaxResponseMixin,CurrentUserIdMixin, Vi
 		dist = R * (2 * atan2(sqrt(a), sqrt(1-a)))
 		
 		if dist <= float(circle.radious):
-			return {'lat':str(circle.lat),'lng' : str(circle.lng)}
+			print {'lat':str(circle.lat),'lng' : str(circle.lng),'friend' : str(friends[self.count])}
+			return {'lat':str(circle.lat),'lng' : str(circle.lng),'friend' : str(friends[self.count])}
 		return None
 
 	@method_decorator(csrf_exempt)
@@ -136,15 +142,44 @@ class CheckZonesView(JSONResponseMixin, AjaxResponseMixin,CurrentUserIdMixin, Vi
 	def post(self, request, username):
 		lat = request.POST.get('lat', None)
 		lng = request.POST.get('lng', None)
-		u = get_object_or_404(User, pk=self.current_user_id(request))
-		circles = Zone.objects.filter(user=u)
-		for x in Zone.objects.all():
-			print x.lat
-			print x.lng
 		P = Circle(float(lat),float(lng),0)
+		u = get_object_or_404(User, pk=self.current_user_id(request))
+		
+		print u.username
+		friends1 = Friend.objects.filter(user1_id=u)
+		friends2 = Friend.objects.filter(user2_id=u)
+
+		compare = []
+		friends = []
+
+		for friendname in friends1:
+			print "frinds1: " , friendname
+			myfriend = User.objects.get(username__exact=friendname)
+			circles = Zone.objects.filter(user=myfriend)
+			for zone in circles:
+				if str(friendname) != str(u.username):
+					print "print teste1: " ,  friendname
+					print "print teste2: " ,  u.username
+
+					friends.append(friendname)
+					compare.append(zone)
+		for friendname in friends2:
+			print "frinds2: " , friendname
+			myfriend = User.objects.get(username__exact=friendname)
+			circles = Zone.objects.filter(user=myfriend)
+			for zone in circles:
+				if str(friendname) != str(u.username):
+					print "print teste1: " ,  friendname
+					print "print teste2: " ,  u.username
+					friends.append(friendname)
+					compare.append(zone)
+		# for x in Zone.objects.all():
+		# 	print x.lat
+		# 	print x.lng
+		#P = Circle(float(lat),float(lng),0)
 		#print P.lat
 		#print [self.comparison(P, i) for i in circles]
-
-		message =json.dumps([self.comparison(P, i) for i in circles])
-		print message
+		
+		message =json.dumps([self.comparison(P, i, friends) for i in compare])
+		#print message
 		return self.render_json_response(message)
