@@ -87,13 +87,15 @@ class SaveZoneView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, Cur
 		u = get_object_or_404(User, pk=self.current_user_id(request))
 		zones = json.loads(request.POST.get('zones', None))
 
-		for i in range(len(zones)):
-			# circles = Zone.objects.filter(user=u) \
-			# 	& Zone.objects.filter(lat__exact=zones[i]['lat']) \
-			# 		& Zone.objects.filter(lng__exact=zones[i]['lng'])
-			# print "try" , circles
-			# if not circles:
-			zone = Zone(user = u, lat = zones[i]['lat'],lng = zones[i]['lng'] , radious = (zones[i]['radius']/1000.0))
+		#for now only works for one zone per user
+		#for i in range(len(zones)):
+		try:
+			oldzone=Zone.objects.get(user_id__exact=u)
+			oldzone.delete()
+			zone = Zone(user = u, lat = zones[0]['lat'],lng = zones[0]['lng'] , radious = (zones[0]['radius']/1000.0))
+			zone.save()
+		except Zone.DoesNotExist:
+			zone = Zone(user = u, lat = zones[0]['lat'],lng = zones[0]['lng'] , radious = (zones[0]['radius']/1000.0))
 			zone.save()
 		
 		message =json.dumps({'Status':'Success'})

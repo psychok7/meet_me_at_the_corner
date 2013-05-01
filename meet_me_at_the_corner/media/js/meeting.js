@@ -64,7 +64,7 @@ function getUrlVars() {
 function initialize() {
 	var mapOptions = {
 	  center: new google.maps.LatLng(38.770949, -9.196243),
-	  zoom: 7,
+	  zoom: 4,
 	  mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	var map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
@@ -120,9 +120,17 @@ function initialize() {
         	"lng" : lng,
         	"radius" : radius
         });
-        console.log(zone);
     });
 
+	if (typeof window.myzone[0] != 'undefined') {
+		draw_circle = new google.maps.Circle({
+	        center: new google.maps.LatLng(window.myzone[0]["lat"], window.myzone[0]["lng"]),
+	        radius: window.myzone[0]["radius"] * 1000.0,
+	        fillColor: '#00FF00',
+	        fillOpacity: 0.4,
+	        map: map
+	 	});
+	}	
 	drawingManager.setMap(map);
 }
 

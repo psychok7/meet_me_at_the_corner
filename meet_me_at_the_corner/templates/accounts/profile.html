@@ -7,12 +7,12 @@
 	{% if user.is_authenticated %}
 		{% if zone %}
 		    <script type="text/javascript">
+		    //send coordenates from DB to javascript
 		       window.myzone.push({
 		       	"lat" : "{{zone.lat}}",
 		       	"lng" : "{{zone.lng}}",
 		       	"radius" : "{{zone.radious}}"
 		       });
-		       console.log("myzone: " + window.myzone[0]["lat"]);
 		    </script>
 		{% else %}
 			teste
