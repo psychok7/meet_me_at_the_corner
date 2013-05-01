@@ -36,7 +36,7 @@ class ProfileView(LoginRequiredMixin, CurrentUserIdMixin, TemplateView):
 		except Zone.DoesNotExist:
 			return self.render_to_response({})
 
-		return self.render_to_response({'zone':zone})
+		return self.render_to_response({'users' : User.objects.all(),'zone' : zone})
 
 class AddFriendView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, CurrentUserIdMixin, View):
 

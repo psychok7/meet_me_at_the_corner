@@ -18,11 +18,38 @@
 			teste
 		{% endif %}
 
+		<!-- Modal -->
+		<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel">Select Profile</h3>
+		  </div>
+		  <div class="modal-body">
+	      		<div class="row-fluid">     			
+	    			<ul class="thumbnails" style="top:50% ; margin-top:80px;">
+	    				{% for user in users %}
+	    				<li class="span2">
+	    				    <a href="http://localhost:8000/{{user}}" class="thumbnail">
+	    				    	<p>{{user}}</p>
+	    				      <img src="/media/img/user_blue.png" alt="" width="64" height="64" />
+	    				    </a>
+	    			  	</li>
+	    			  	{% endfor %}			  
+	    			</ul>
+	    			
+	    		</div>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		  </div>
+		</div>
 
 		<div class="form-actions">
 			{% csrf_token %}
+			<button href="#myModal" role="button" class="btn btn-primary" data-toggle="modal">Friends Profiles</button>
 			<button type="submit" class="btn btn-primary" name="add_friend" onclick="addfriend();">Add Friend</button>
-			<button type="submit" class="btn btn-primary" name="save_zone" onclick="savezone();">Save Zones</button>
+			<button type="submit" class="btn btn-primary" name="save_zone" onclick="savezone();">Save My Zone</button>
+			
 	    </div>
 	    <div id="map_canvas" style="width:80%; height:80%"></div>
     {% endif %}
