@@ -34,8 +34,8 @@ class ProfileView(LoginRequiredMixin, CurrentUserIdMixin, TemplateView):
 			zone = Zone.objects.get(user_id__exact=u)
 			print zone
 		except Zone.DoesNotExist:
-			return self.render_to_response({})
-
+			return self.render_to_response({'users' : User.objects.all()})
+		
 		return self.render_to_response({'users' : User.objects.all(),'zone' : zone , 'site_url' : settings.SITE_URL})
 
 class AddFriendView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, CurrentUserIdMixin, View):
