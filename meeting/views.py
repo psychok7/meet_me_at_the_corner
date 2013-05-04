@@ -49,7 +49,7 @@ class AddFriendView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, Cu
 		try:
 			friend1 = Friend.objects.get(user1__exact=u)
 			try:
-				friend2 = Friend.objects.get(user2__exact=friend)
+				friend1.user2 = friend
 			except Friend.DoesNotExist:
 				flag=False
 		except Friend.DoesNotExist:
